@@ -2,44 +2,63 @@
 " 基本設定（VimとIDEの融合）
 " ============================================
 
-set clipboard+=unnamedplus      " OSクリップボードと連携（ヤンク・ペースト共通化）
-set incsearch                   " 検索入力中にマッチをハイライト（インクリメンタル）
-set ideajoin                    " 'J' の結合処理を IntelliJ スタイルに変更（文法維持）
-set highlightedyank            " yank（コピー）直後の範囲を一時的にハイライト
-set surround                    " 文字・記号・タグで囲う操作（cs"' 等）が使える
-set commentary                  " gcc でコメント／アンコメント切替が可能に
-set easymotion                  " 任意位置へ一発ジャンプ（\w, \j 等）
+" OSクリップボードと連携（ヤンク・ペースト共通化）
+set clipboard+=unnamedplus
 
-let mapleader = " "             " <leader> をスペースキーに設定（すべての <leader> 系コマンドの起点）
+" 検索入力中にマッチをハイライト（インクリメンタル）
+set incsearch
 
-" 設定ファイルをすぐに再読み込み（<Space><Space>r）
-nnoremap <leader><leader>r :<C-u>source ~/.ideavimrc<CR>
+" 'J' の結合処理を IntelliJ スタイルに変更（文法維持）
+set ideajoin
+
+" yank（コピー）直後の範囲を一時的にハイライト
+set highlightedyank
+
+" 文字・記号・タグで囲う操作（cs"' 等）が使える
+set surround
+
+" gcc でコメント／アンコメント切替が可能に
+set commentary
+
+" 任意位置へ一発ジャンプ（EasyMotion使用可）
+set easymotion
+
+" !! 重要: <leader> をスペースキーに設定（すべてのカスタム操作の起点）
+let mapleader = " "
+
+" 設定ファイルをすぐに再読み込み（<Space><Space>R）
+nnoremap <leader><leader>R :<C-u>source ~/.ideavimrc \| echo "Reloaded .ideavimrc"<CR>
 
 " ============================================
 " ファイル操作（超基本）
 " ============================================
 
-nnoremap ew :<C-u>w<CR>         " 保存（:w の代替）※毎回使う
-nnoremap eq :<C-u>wq<CR>        " 保存して終了
-nnoremap Q  :<C-u>quit!<CR>     " 強制終了（変更を破棄して閉じる）
+" 保存（:w の代替）
+nnoremap ew :<C-u>w<CR>
+
+" 保存して終了
+nnoremap eq :<C-u>wq<CR>
+
+" 強制終了（変更を破棄して閉じる）
+nnoremap Q :<C-u>quit!<CR>
 
 " ============================================
 " 編集補助（見やすさ・書きやすさUP）
 " ============================================
 
-" 見た目の行単位で移動（折り返しを意識）
-nnoremap j gj
-nnoremap k gk
+" 折り返しを意識した移動（行の見た目で）
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <UP> gk
 nnoremap <DOWN> gj
 
-" 現在行の下に空行を追加（ノーマルモードのまま）
+" 現在行の下に空行を追加
 nnoremap O :<C-u>call append(expand('.'), '')<CR>j
 
-" 置換操作のテンプレート（%s///cg）
+" 正規表現で一括置換（%s///cg）
 nnoremap <C-s> :<C-u>%s///cg<left><left><left><left>
 
-" ペースト挙動の改善（貼り付け位置制御）
+" ペースト位置制御の改善
 nnoremap p ]p
 nnoremap P ]P
 nnoremap ]p p
@@ -49,74 +68,139 @@ nnoremap ]P P
 " コードナビゲーション（定義・エラー移動）
 " ============================================
 
-nnoremap [m :<C-u>action MethodUp<CR>          " 前のメソッドへジャンプ
-nnoremap ]m :<C-u>action MethodDown<CR>        " 次のメソッドへジャンプ
-nnoremap [e :<C-u>action GotoPreviousError<CR> " 前のエラーへ
-nnoremap ]e :<C-u>action GotoNextError<CR>     " 次のエラーへ
+nnoremap [m :<C-u>action MethodUp<CR>
+nnoremap ]m :<C-u>action MethodDown<CR>
+nnoremap [e :<C-u>action GotoPreviousError<CR>
+nnoremap ]e :<C-u>action GotoNextError<CR>
 
 " ============================================
 " IntelliJ アクション統合（検索・構造・補完）
 " ============================================
 
-nnoremap <leader>k :<C-u>action QuickJavaDoc<CR>       " JavaDocを即表示（カーソル下の要素）
-nnoremap <leader>a :<C-u>action GotoAction<CR>         " IntelliJ全アクション検索（超便利）
-nnoremap <leader>e :<C-u>action SearchEverywhere<CR>   " 全検索（Shift×2 相当）
+" ファイル内検索（Ctrl+F 相当）
+nnoremap <leader>ff :<C-u>action Find<CR>
 
-nnoremap <leader>f :<C-u>action GotoFile<CR>           " ファイル検索（Ctrl+Shift+N 相当）
-nnoremap <leader>F :<C-u>action FindInPath<CR>         " 全文検索（Ctrl+Shift+F 相当）
-nnoremap <leader>s :<C-u>action GotoClass<CR>          " クラスジャンプ（Java/Kotlin系で使用）
-nnoremap <leader>S :<C-u>action GotoSymbol<CR>         " シンボルジャンプ（メソッド・変数など）
+" 置換（Ctrl+R 相当）
+nnoremap <leader>rf :<C-u>action Replace<CR>
 
-nnoremap <leader>l :<C-u>action RecentFiles<CR>        " 最近開いたファイル一覧
-nnoremap <leader>L :<C-u>action RecentLocations<CR>    " 最近の編集箇所へ移動
-nnoremap <leader>b :<C-u>action JumpToLastChange<CR>   " 最後に編集した箇所にジャンプ
+" JavaDoc 表示（QuickDoc）
+nnoremap <leader>k :<C-u>action QuickJavaDoc<CR>
 
-nnoremap <leader>o :<C-u>action FileStructurePopup<CR> " クラス／関数の一覧表示（Ctrl+F12 相当）
-nnoremap <leader>p :<C-u>action ReformatCode<CR>       " コード整形（選択範囲にも対応）
-nnoremap <leader>u :<C-u>action OptimizeImports<CR>    " 不要な import の自動削除
+" アクション検索（Shift+Ctrl+A）
+nnoremap <leader>a :<C-u>action GotoAction<CR>
 
-nnoremap <leader>q :<C-u>action CloseContent<CR>       " 現在のエディタタブを閉じる
-nnoremap <leader>Q :<C-u>action ReopenClosedTab<CR>    " 閉じたタブを再オープン（Ctrl+Shift+T）
+" 全検索（Shift×2）
+nnoremap <leader>e :<C-u>action SearchEverywhere<CR>
 
-nnoremap <leader>t :<C-u>action ActivateTerminalToolWindow<CR>   " ターミナル表示切替
-nnoremap <leader>. :<C-u>action ActivateProjectToolWindow<CR>    " プロジェクトビュー表示切替
-nnoremap <leader>P :<C-u>action ManageRecentProjects<CR>         " 最近のプロジェクト一覧
+" ファイル検索（Ctrl+Shift+N）
+nnoremap <leader>f :<C-u>action GotoFile<CR>
+
+" プロジェクト全文検索（Ctrl+Shift+F）
+nnoremap <leader>F :<C-u>action FindInPath<CR>
+
+" クラスジャンプ（Java/Kotlinなど）
+nnoremap <leader>s :<C-u>action GotoClass<CR>
+
+" シンボルジャンプ（メソッド・変数など）
+nnoremap <leader>S :<C-u>action GotoSymbol<CR>
+
+" 最近開いたファイル
+nnoremap <leader>l :<C-u>action RecentFiles<CR>
+
+" 最近の編集箇所
+nnoremap <leader>L :<C-u>action RecentLocations<CR>
+
+" 最後の変更箇所へジャンプ
+nnoremap <leader>b :<C-u>action JumpToLastChange<CR>
+
+" クラス／関数一覧（Ctrl+F12）
+nnoremap <leader>o :<C-u>action FileStructurePopup<CR>
+
+" コード整形（選択範囲もOK）
+nnoremap <leader>p :<C-u>action ReformatCode<CR>
+
+" 不要 import の自動削除
+nnoremap <leader>u :<C-u>action OptimizeImports<CR>
+
+" エディタタブを閉じる
+nnoremap <leader>q :<C-u>action CloseContent<CR>
+
+" 閉じたタブを再オープン
+nnoremap <leader>Q :<C-u>action ReopenClosedTab<CR>
+
+" ターミナル表示切替
+nnoremap <leader>t :<C-u>action ActivateTerminalToolWindow<CR>
+
+" プロジェクトビュー表示切替
+nnoremap <leader>. :<C-u>action ActivateProjectToolWindow<CR>
+
+" 最近のプロジェクト一覧
+nnoremap <leader>P :<C-u>action ManageRecentProjects<CR>
 
 " ============================================
 " コード生成系（Generateメニュー相当）
 " ============================================
 
-nnoremap <leader>G  :<C-u>action Generate<CR>                    " Generate メニュー呼び出し（Alt+Insert）
-nnoremap <leader>gn :<C-u>action NewClass<CR>                    " 新しいクラスを作成
-nnoremap <leader>go :<C-u>action OverrideMethods<CR>             " メソッドのオーバーライド
-nnoremap <leader>gc :<C-u>action GenerateConstructor<CR>         " コンストラクタ生成
-nnoremap <leader>gg :<C-u>action GenerateGetter<CR>              " Getter生成
-nnoremap <leader>gs :<C-u>action GenerateSetter<CR>              " Setter生成
-nnoremap <leader>ga :<C-u>action GenerateGetterAndSetter<CR>     " Getter + Setter
-nnoremap <leader>ge :<C-u>action GenerateEquals<CR>              " equals/hashCode 生成
-nnoremap <leader>gt :<C-u>action GenerateTestMethod<CR>          " テストメソッド生成
+nnoremap <leader>G  :<C-u>action Generate<CR>
+nnoremap <leader>gn :<C-u>action NewClass<CR>
+nnoremap <leader>go :<C-u>action OverrideMethods<CR>
+nnoremap <leader>gc :<C-u>action GenerateConstructor<CR>
+nnoremap <leader>gg :<C-u>action GenerateGetter<CR>
+nnoremap <leader>gs :<C-u>action GenerateSetter<CR>
+nnoremap <leader>ga :<C-u>action GenerateGetterAndSetter<CR>
+nnoremap <leader>ge :<C-u>action GenerateEquals<CR>
+nnoremap <leader>gt :<C-u>action GenerateTestMethod<CR>
 
 " ============================================
 " 実行・デバッグ（開発サイクル支援）
 " ============================================
 
-nnoremap <leader>j :<C-u>action Run<CR>                          " Run 実行（現在の構成）
-nnoremap <leader>d :<C-u>action Debug<CR>                        " Debug 実行
-nnoremap <leader>; :<C-u>action ToggleLineBreakpoint<CR>         " 行ブレークポイントのON/OFF
-nnoremap <leader>R :<C-u>action RunContextTest<CR>               " 現在のテストメソッドを実行
-nnoremap <leader>D :<C-u>action DebugContextTest<CR>            " 現在のテストをデバッグ実行
+nnoremap <leader>r :<C-u>action Run<CR>
+nnoremap <leader>d :<C-u>action Debug<CR>
+nnoremap <leader>; :<C-u>action ToggleLineBreakpoint<CR>
+nnoremap <leader>tr :<C-u>action RunContextTest<CR>
+nnoremap <leader>td :<C-u>action DebugContextTest<CR>
 
 " ============================================
 " Git / バージョン管理（VCS連携が有効な場合）
 " ============================================
 
-nnoremap <leader>gS :<C-u>action Vcs.ShowTabbedFileHistory<CR>   " 現在ファイルの履歴一覧表示
-nnoremap <leader>gB :<C-u>action Annotate<CR>                    " Git blame 表示
-nnoremap <leader>gC :<C-u>action CheckinProject<CR>              " Git Commit（変更をまとめてコミット）
+nnoremap <leader>vs :<C-u>action Vcs.ShowTabbedFileHistory<CR>
+nnoremap <leader>vb :<C-u>action Annotate<CR>
+nnoremap <leader>vd :<C-u>action ChangesView<CR>
+nnoremap <leader>vc :<C-u>action CheckinProject<CR>
+nnoremap <leader>vp :<C-u>action Vcs.Push<CR>
+nnoremap <leader>vl :<C-u>action Vcs.UpdateProject<CR>
+nnoremap <leader>vr :<C-u>:!git reset --soft HEAD~1<CR>
 
 " ============================================
 " その他ユーティリティ
 " ============================================
 
-nnoremap <leader>y :<C-u>action ShowIntentionActions<CR>         " 補完・テンプレートなどの意図アクション
-nnoremap <leader>w :<C-u>action HideAllWindows<CR>               " すべてのツールウィンドウを一時的に非表示
+" 補完・テンプレートなどの意図アクション表示
+nnoremap <leader>y :<C-u>action ShowIntentionActions<CR>
+
+" すべてのツールウィンドウを一時的に非表示
+nnoremap <leader>h :<C-u>action HideAllWindows<CR>
+
+" 検索ハイライトを解除
+nnoremap <leader><CR> :nohlsearch<CR>
+
+" ============================================
+" EasyMotion 快速移動系（<leader>z 系に統一）
+" ============================================
+
+" 単語単位ジャンプ（通常の w 相当）
+nnoremap <leader>zw :<C-u>action EasymotionWordForward<CR>
+
+" 行ジャンプ（下方向）
+nnoremap <leader>zj :<C-u>action EasymotionLineForward<CR>
+
+" 行ジャンプ（上方向）
+nnoremap <leader>zk :<C-u>action EasymotionLineBackward<CR>
+
+" 任意文字列検索（/ 相当）
+nnoremap <leader>z/ :<C-u>action EasymotionSearch<CR>
+
+" カーソル下の1文字ジャンプ（f/F 相当）
+nnoremap <leader>zf :<C-u>action EasymotionFindChar<CR>
