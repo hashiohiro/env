@@ -135,6 +135,7 @@ nnoremap <leader>d :<C-u>action Debug<CR>
 nnoremap <leader>; :<C-u>action ToggleLineBreakpoint<CR>
 nnoremap <leader>tr :<C-u>action RunContextTest<CR>
 nnoremap <leader>td :<C-u>action DebugContextTest<CR>
+nnoremap <leader>x :<C-u>action Stop<CR>
 
 " ============================================
 " Git / バージョン管理（VCS連携が有効な場合）
