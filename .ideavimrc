@@ -113,6 +113,16 @@ nnoremap <leader>t :<C-u>action ActivateTerminalToolWindow<CR>
 nnoremap <leader>. :<C-u>action ActivateProjectToolWindow<CR>
 
 " ============================================
+" Maven コマンドショートカット
+" ============================================
+
+" mvn install
+nnoremap <leader>mi :<C-u>action ActivateTerminalToolWindow<CR>:call feedkeys("i") \| call feedkeys("mvn install\<CR>")<CR>
+
+" mvn clean
+nnoremap <leader>mc :<C-u>action ActivateTerminalToolWindow<CR>:call feedkeys("i") \| call feedkeys("mvn clean\<CR>")<CR>
+
+" ============================================
 " コード生成系（Generateメニュー相当）
 " ============================================
 
