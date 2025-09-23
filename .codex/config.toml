@@ -1,0 +1,15 @@
+model = "gpt-5-codex"
+[profiles.readonly]
+sandbox_mode = "read-only"
+
+[profiles.build]
+sandbox_mode = "workspace-write"
+
+[profiles.unattended]
+sandbox_mode = "workspace-write"
+
+[projects.'C:\Users\hashi\WebstormProjects\Mypage_Front_Project']
+trust_level = "trusted"
+
+[projects.'\\?\C:\Users\hashi\WebstormProjects\anguar-frontend']
+trust_level = "trusted"
